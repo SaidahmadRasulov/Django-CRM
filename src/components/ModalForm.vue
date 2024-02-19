@@ -7,7 +7,7 @@
       class="bx bx-x text-white text-[2.5rem] absolute right-[2%] top-2 cursor-pointer"
       @click="handleCancelEdit"
     ></i>
-    
+
     <div
       class="form_content w-1/2 mt-20 mx-auto bg-blue shadow-lg p-4 rounded-md"
     >
@@ -76,7 +76,7 @@
           @click="handleAdd"
           class="mx-4 bg-green-700 text-white rounded-md p-2 px-4 hover:bg-white border border-green-700 hover:text-green-700 transition-all delay-75 mt-4"
         >
-          Qo'shish
+          O'zgartirish
         </button>
       </div>
     </div>
@@ -88,6 +88,14 @@ export default {
   data() {
     return {
       toggleEdit: false,
+      courses: [],
+      courseSelect: "dev",
+      editObj: {},
+      filteredGroups: [],
+      groupSelect: "",
+      name: "",
+      parent: "",
+      phoneNumber: "",
     };
   },
   mounted() {
@@ -97,6 +105,22 @@ export default {
     } else {
       this.toggleEdit = false;
       localStorage.setItem("modal", JSON.stringify(this.toggleEdit));
+    }
+    const storedCourses = JSON.parse(localStorage.getItem("courses"));
+    if (storedCourses) {
+      this.courseSelect = storedCourses;
+    }
+    const storedEditObj = JSON.parse(localStorage.getItem("editObj"));
+    if (storedEditObj !== null) {
+      this.editObj = storedEditObj;
+      this.name = this.editObj.name;
+      this.phoneNumber = this.editObj.phoneNumber;
+      this.parent = this.editObj.parents;
+      this.groupSelect = this.editObj.group;
+    }
+    const storedGroups = JSON.parse(localStorage.getItem("groups"));
+    if (storedGroups) {
+      this.filteredGroups = storedCourses;
     }
   },
 

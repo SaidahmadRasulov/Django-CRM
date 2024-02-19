@@ -35,7 +35,7 @@
             class="resize-none h-20 p-2 mt-3 outline-none rounded-md"
           ></textarea>
         </div>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4 justify-between">
           <div class="group_box flex flex-col gap-2 w-1/3">
             <label for="group" class="text-xl text-white">Guruhlar</label>
             <select
@@ -59,6 +59,23 @@
             >
               <option v-for="item in courses" :value="item.val">
                 {{ item.title }}
+              </option>
+            </select>
+          </div>
+          <div class="teacher_box flex flex-col gap-2 w-1/2">
+            <label for="teacher" class="text-xl text-white">Mentor</label>
+            <select
+              id="teacher"
+              class="px-2 py-1 rounded-md outline-none cursor-pointer"
+              v-model="teacherSelect"
+              @change="handleChangeTeacher"
+            >
+              <option
+                v-for="item in teachers"
+                :value="item.value"
+                :key="item.value"
+              >
+                {{ item.name }}
               </option>
             </select>
           </div>
@@ -90,6 +107,8 @@ export default {
       phoneNumber: "",
       courseSelect: "dev",
       groupSelect: "",
+      teacherSelect: "",
+      teachers: [],
       parent: "",
       courses: [
         {
@@ -164,16 +183,24 @@ export default {
         parents: this.parent,
         group: this.groupSelect,
         course: this.courseSelect,
+        mentor: this.teacherSelect,
       };
       if (
         this.name !== "" &&
         this.phoneNumber !== "" &&
         this.parent !== "" &&
         this.groupSelect !== "" &&
-        this.courseSelect !== ""
+        this.courseSelect !== "" &&
+        this.teacherSelect !== ""
       ) {
-        this.initialGroups.map((item) => {
+        this.initialGroups.forEach((item) => {
           if (item.title == this.groupSelect) {
+            this.teachers.forEach((teacher) => {
+              if (teacher.name == this.teacherSelect) {
+                teacher.groups.push(item);
+                localStorage.setItem("mentors", JSON.stringify(this.teachers));
+              }
+            });
             item.students.push(newObj);
             localStorage.setItem(
               "filtered-groups",
@@ -198,23 +225,26 @@ export default {
     },
     handleChange() {
       localStorage.setItem("course-val", JSON.stringify(this.courseSelect));
-      const filteredGroups = this.initialGroups.filter(
-        (item) => item.cat == this.courseSelect
-      );
+      const filteredGroups = this.initialGroups.filter((item) => {
+        return item.cat == this.courseSelect;
+      });
+
       localStorage.setItem("filtered-groups", JSON.stringify(filteredGroups));
       this.filteredGroups = filteredGroups;
+    },
+    handleChangeTeacher() {
+      localStorage.setItem("mentor-val", JSON.stringify(this.teacherSelect));
     },
     handleChangeGroup() {
       localStorage.setItem("group-select", JSON.stringify(this.groupSelect));
     },
   },
   mounted() {
-    // Groups
     const getedGroups = JSON.parse(localStorage.getItem("groups"));
     if (getedGroups) {
       this.initialGroups = getedGroups;
     }
-    // Filtered
+
     const filteredGroupsFromStorage = JSON.parse(
       localStorage.getItem("filtered-groups")
     );
@@ -226,17 +256,28 @@ export default {
         JSON.stringify(this.filteredGroups)
       );
     }
-    // SelectedCourse
+
     const selectedCourseFromStorage = JSON.parse(
       localStorage.getItem("course-val")
     );
     if (selectedCourseFromStorage) {
       this.courseSelect = selectedCourseFromStorage;
     }
-    // SelectedGroup
+
     const selectedGroup = JSON.parse(localStorage.getItem("group-select"));
     if (selectedGroup) {
       this.groupSelect = selectedGroup;
+    }
+    localStorage.setItem("courses", JSON.stringify(this.courses));
+
+    const storedMentors = JSON.parse(localStorage.getItem("mentors"));
+    if (storedMentors) {
+      this.teachers = storedMentors;
+    }
+
+    const storedSelectTeacher = JSON.parse(localStorage.getItem("mentors-val"));
+    if (storedSelectTeacher) {
+      this.teacherSelect = storedSelectTeacher;
     }
   },
 };

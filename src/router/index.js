@@ -6,6 +6,7 @@ import Payments from "../view/Payments.vue";
 import Cart from "../view/Cart.vue";
 import CompletedPage from '../view/CompletedPage.vue'
 import GroupsAbout from '../view/GroupsAbout.vue'
+import Mentors from '../view/Mentors.vue'
 
 const router = createRouter({
   history: createMemoryHistory(),
@@ -44,6 +45,11 @@ const router = createRouter({
       name: 'groupsAbout',
       path: '/groups/:title',
       component: GroupsAbout
+    },
+    {
+      name: 'mentors',
+      path: '/mentors',
+      component: Mentors
     }
   ],
 });
