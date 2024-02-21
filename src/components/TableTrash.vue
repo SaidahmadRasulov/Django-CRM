@@ -37,7 +37,7 @@
           <td class="border px-4 py-2">{{ student.group }}</td>
         </tr>
         <tr v-else>
-          <td colspan="7" class="border px-4 py-2 text-center">
+          <td colspan="6" class="border px-4 py-2 text-center">
             Ma'lumot yo'q
           </td>
         </tr>

@@ -23,13 +23,23 @@ export default {
           teacher: "Front-End",
           value: "dev",
           groups: [],
+          address: "Toshkent Shahar",
         },
         {
           id: 2,
           name: "Rasulov Saidahmad",
           teacher: "Front-End",
+          value: "py",
+          groups: [],
+          address: "Toshkent Shahar",
+        },
+        {
+          id: 3,
+          name: "Abdulloh Ergashev",
+          teacher: "Grafik Dizayn",
           value: "des",
           groups: [],
+          address: "Toshkent Shahar",
         },
       ],
     };
@@ -49,7 +59,12 @@ export default {
     } else {
       this.data = JSON.parse(storedData);
     }
-    localStorage.setItem("mentors", JSON.stringify(this.mentors));
+    const storedMentors = JSON.parse(localStorage.getItem("teachers"));
+    if (storedMentors) {
+      this.mentors = storedMentors;
+    } else {
+      localStorage.setItem("teachers", JSON.stringify(this.mentors));
+    }
   },
   components: { LayoutNavbar, RouterView },
 };

@@ -26,9 +26,11 @@
       </thead>
       <tbody>
         <tr
+          ref="trRef"
           v-if="filteredStudents.length > 0"
           v-for="(student, index) in filteredStudents"
           :key="student.id"
+          :class="{ 'text-stone-500': student.deleted === true}"
         >
           <td class="border px-4 py-2">{{ index + 1 }}</td>
           <td class="border px-4 py-2">{{ student.name }}</td>
@@ -117,17 +119,12 @@ export default {
     handleDelete(id) {
       let confirmation = window.confirm("Shuni o'chirishga rozimisz?");
       if (confirmation) {
-        this.students = this.students.filter((item) => {
-          if (item.id == id) {
-            this.trashArray.push(item);
-            localStorage.setItem("trashArray", JSON.stringify(this.trashArray));
-          } else {
-            return item;
-          }
-        });
+        const geteditem = this.students.filter((item) => item.id == id);
+        geteditem[0].deleted = true;
         localStorage.setItem("students", JSON.stringify(this.students));
       }
     },
+
     handleStartEdit(item) {
       this.toggleShow = !this.toggleShow;
       localStorage.setItem("modal", JSON.stringify(this.toggleShow));

@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1 class="text-2xl">O'quvchi qo'shish</h1>
-    <div class="container mt-[2rem]">
+    <div class="container mt-[2rem] flex gap-4">
       <div class="form_content w-1/2 mx-auto bg-blue shadow-lg p-4 rounded-md">
         <div class="mb-6 flex flex-col">
           <label for="name" class="mb-3 text-xl text-white">Ism-sharifi</label>
@@ -68,13 +68,9 @@
               id="teacher"
               class="px-2 py-1 rounded-md outline-none cursor-pointer"
               v-model="teacherSelect"
-              @change="handleChangeTeacher"
+              @change="handleTeacherChange"
             >
-              <option
-                v-for="item in teachers"
-                :value="item.value"
-                :key="item.value"
-              >
+              <option v-for="item in teachers" :value="item.value">
                 {{ item.name }}
               </option>
             </select>
@@ -89,11 +85,20 @@
           </button>
         </div>
       </div>
+      <div class="w-1/4">
+        <GroupAdd />
+      </div>
+      <div class="w-1/4">
+        <MentorAdd />
+      </div>
     </div>
   </section>
 </template>
 
 <script>
+import MentorAdd from "./MentorAdd.vue";
+import GroupAdd from "./GroupAdd.vue";
+
 export default {
   props: {
     data: {
@@ -107,8 +112,8 @@ export default {
       phoneNumber: "",
       courseSelect: "dev",
       groupSelect: "",
-      teacherSelect: "",
       teachers: [],
+      teacherSelect: "",
       parent: "",
       courses: [
         {
@@ -133,42 +138,49 @@ export default {
           title: "200",
           cat: "dev",
           students: [],
+          studyDay: "Dushanba, Chorshanba, Juma",
         },
         {
           id: 2,
           title: "201",
           cat: "des",
           students: [],
+          studyDay: "Seyshanba, Payshanba, Shanba",
         },
         {
           id: 3,
           title: "202",
           cat: "dev",
           students: [],
+          studyDay: "Dushanba, Chorshanba, Juma",
         },
         {
           id: 4,
           title: "203",
           cat: "des",
           students: [],
+          studyDay: "Seyshanba, Payshanba, Shanba",
         },
         {
           id: 5,
           title: "205",
           cat: "py",
           students: [],
+          studyDay: "Dushanba, Chorshanba, Juma",
         },
         {
           id: 6,
           title: "206",
           cat: "py",
           students: [],
+          studyDay: "Seyshanba, Payshanba, Shanba",
         },
         {
           id: 7,
           title: "207",
           cat: "py",
           students: [],
+          studyDay: "Dushanba, Chorshanba, Juma",
         },
       ],
       filteredGroups: [],
@@ -184,6 +196,7 @@ export default {
         group: this.groupSelect,
         course: this.courseSelect,
         mentor: this.teacherSelect,
+        deleted: false,
       };
       if (
         this.name !== "" &&
@@ -196,20 +209,17 @@ export default {
         this.initialGroups.forEach((item) => {
           if (item.title == this.groupSelect) {
             this.teachers.forEach((teacher) => {
-              if (teacher.name == this.teacherSelect) {
+              if (teacher.value == this.teacherSelect) {
                 teacher.groups.push(item);
-                localStorage.setItem("mentors", JSON.stringify(this.teachers));
               }
             });
             item.students.push(newObj);
-            localStorage.setItem(
-              "filtered-groups",
-              JSON.stringify(this.filteredGroups)
-            );
           }
         });
         this.data.push(newObj);
-        this.saveDataToLocalStorage();
+        localStorage.setItem("students", JSON.stringify(this.data));
+        localStorage.setItem("teachers", JSON.stringify(this.teachers));
+        localStorage.setItem("groups", JSON.stringify(this.initialGroups));
         this.name = "";
         this.phoneNumber = "";
         this.parent = "";
@@ -228,15 +238,14 @@ export default {
       const filteredGroups = this.initialGroups.filter((item) => {
         return item.cat == this.courseSelect;
       });
-
       localStorage.setItem("filtered-groups", JSON.stringify(filteredGroups));
       this.filteredGroups = filteredGroups;
     },
-    handleChangeTeacher() {
-      localStorage.setItem("mentor-val", JSON.stringify(this.teacherSelect));
-    },
     handleChangeGroup() {
       localStorage.setItem("group-select", JSON.stringify(this.groupSelect));
+    },
+    handleTeacherChange() {
+      localStorage.setItem("teacher-val", JSON.stringify(this.teacherSelect));
     },
   },
   mounted() {
@@ -244,7 +253,6 @@ export default {
     if (getedGroups) {
       this.initialGroups = getedGroups;
     }
-
     const filteredGroupsFromStorage = JSON.parse(
       localStorage.getItem("filtered-groups")
     );
@@ -256,30 +264,27 @@ export default {
         JSON.stringify(this.filteredGroups)
       );
     }
-
     const selectedCourseFromStorage = JSON.parse(
       localStorage.getItem("course-val")
     );
     if (selectedCourseFromStorage) {
       this.courseSelect = selectedCourseFromStorage;
     }
-
     const selectedGroup = JSON.parse(localStorage.getItem("group-select"));
     if (selectedGroup) {
       this.groupSelect = selectedGroup;
     }
     localStorage.setItem("courses", JSON.stringify(this.courses));
-
-    const storedMentors = JSON.parse(localStorage.getItem("mentors"));
-    if (storedMentors) {
-      this.teachers = storedMentors;
+    const storedTeachers = JSON.parse(localStorage.getItem("teachers"));
+    if (storedTeachers) {
+      this.teachers = storedTeachers;
     }
-
-    const storedSelectTeacher = JSON.parse(localStorage.getItem("mentors-val"));
-    if (storedSelectTeacher) {
-      this.teacherSelect = storedSelectTeacher;
+    const storedTeacherValue = JSON.parse(localStorage.getItem("teacher-val"));
+    if (storedTeacherValue) {
+      this.teacherSelect = storedTeacherValue;
     }
   },
+  components: { MentorAdd, GroupAdd },
 };
 </script>
 

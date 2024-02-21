@@ -51,15 +51,6 @@
               <h3>O'quvchilar ro'yxati</h3>
             </RouterLink>
           </li>
-          <li class="nav_item group" :class="{ 'bg-blue text-white': $route.path === '/cart' }">
-            <RouterLink
-              to="/cart"
-              class="flex items-center gap-2 group-hover:text-white transition-colors delay-75 p-4"
-            >
-              <i class="bx bx-trash text-[28px]"></i>
-              <h3>Korzinka</h3>
-            </RouterLink>
-          </li>
           <li class="nav_item group" :class="{ 'bg-blue text-white': $route.path === '/completed' }">
             <RouterLink
               to="/completed"
